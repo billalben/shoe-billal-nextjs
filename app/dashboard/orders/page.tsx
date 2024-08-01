@@ -1,3 +1,4 @@
+import prisma from "@/app/lib/db";
 import {
   Card,
   CardContent,
@@ -13,31 +14,34 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { unstable_noStore as noStore } from "next/cache";
+
+async function getData() {
+  const data = await prisma.order.findMany({
+    select: {
+      amount: true,
+      createdAt: true,
+      status: true,
+      id: true,
+      User: {
+        select: {
+          firstName: true,
+          email: true,
+          profileImage: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  return data;
+}
 
 export default async function OrdersPage() {
-  const data = [
-    {
-      id: 1,
-      User: {
-        firstName: "John Doe",
-        email: "john@gmail.com",
-      },
-      status: "Pending",
-      createdAt: new Date(),
-      amount: 1000,
-    },
-    {
-      id: 2,
-      User: {
-        firstName: "John Doe",
-        email: "john@gmail.com",
-      },
-      status: "Pending",
-      createdAt: new Date(),
-      amount: 1000,
-    },
-  ];
-
+  noStore();
+  const data = await getData();
   return (
     <Card>
       <CardHeader className="px-7">
