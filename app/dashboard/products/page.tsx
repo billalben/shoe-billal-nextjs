@@ -1,3 +1,4 @@
+import prisma from "@/app/lib/db";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -25,26 +26,21 @@ import {
 import { MoreHorizontal, PlusCircle, UserIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { unstable_noStore as noStore } from "next/cache";
 
-export default function ProductsRoute() {
-  const data = [
-    {
-      id: 1,
-      name: "Product 1",
-      status: "Active",
-      price: 1000,
-      createdAt: new Date(),
-      images: ["/all.jpeg"],
+async function getData() {
+  const data = await prisma.product.findMany({
+    orderBy: {
+      createdAt: "desc",
     },
-    {
-      id: 2,
-      name: "Product 2",
-      status: "Active",
-      price: 1000,
-      createdAt: new Date(),
-      images: ["/all.jpeg"],
-    },
-  ];
+  });
+
+  return data;
+}
+
+export default async function ProductsRoute() {
+  noStore();
+  const data = await getData();
 
   return (
     <>

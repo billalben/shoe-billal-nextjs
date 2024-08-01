@@ -1,7 +1,5 @@
 "use client";
 
-import { createProduct } from "@/app/actions";
-import { UploadDropzone } from "@/app/lib/uplaodthing";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -20,22 +18,37 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { ChevronLeft, XIcon } from "lucide-react";
 import Link from "next/link";
+import { SubmitButton } from "../SubmitButtons";
+import { Switch } from "@/components/ui/switch";
+import Image from "next/image";
+import { UploadDropzone } from "@/app/lib/uplaodthing";
+import { useState } from "react";
 import { useFormState } from "react-dom";
+import { editProduct } from "@/app/actions";
 import { useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
 import { productSchema } from "@/app/lib/zodSchemas";
-import { useState } from "react";
+import { type $Enums } from "@prisma/client";
 
-import Image from "next/image";
-import { SubmitButton } from "@/app/components/SubmitButtons";
+interface iAppProps {
+  data: {
+    id: string;
+    name: string;
+    description: string;
+    status: $Enums.ProductStatus;
+    price: number;
+    images: string[];
+    category: $Enums.Category;
+    isFeatured: boolean;
+  };
+}
 
-export default function ProductCreateRoute() {
-  const [images, setImages] = useState<string[]>([]);
-  const [lastResult, action] = useFormState(createProduct, undefined); // in next js 15 it is useActionState
+export function EditForm({ data }: iAppProps) {
+  const [images, setImages] = useState<string[]>(data.images);
+  const [lastResult, action] = useFormState(editProduct, undefined);
   const [form, fields] = useForm({
     lastResult,
 
@@ -53,20 +66,23 @@ export default function ProductCreateRoute() {
 
   return (
     <form id={form.id} onSubmit={form.onSubmit} action={action}>
+      {/* This is a hidden input field that will be used to send the product id to the server */}
+      <input type="hidden" name="productId" value={data.id} />
+
       <div className="flex items-center gap-4">
         <Button variant="outline" size="icon" asChild>
           <Link href="/dashboard/products">
             <ChevronLeft className="h-4 w-4" />
           </Link>
         </Button>
-        <h1 className="text-xl font-semibold tracking-tight">New Product</h1>
+        <h1 className="text-xl font-semibold tracking-tight">Edit Product</h1>
       </div>
 
       <Card className="mt-5">
         <CardHeader>
           <CardTitle>Product Details</CardTitle>
           <CardDescription>
-            In this form you can create your product
+            In this form you can update your product
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -77,10 +93,11 @@ export default function ProductCreateRoute() {
                 type="text"
                 key={fields.name.key}
                 name={fields.name.name}
-                defaultValue={fields.name.initialValue}
+                defaultValue={data.name}
                 className="w-full"
                 placeholder="Product Name"
               />
+
               <p className="text-red-500">{fields.name.errors}</p>
             </div>
 
@@ -89,7 +106,7 @@ export default function ProductCreateRoute() {
               <Textarea
                 key={fields.description.key}
                 name={fields.description.name}
-                defaultValue={fields.description.initialValue}
+                defaultValue={data.description}
                 placeholder="Write your description right here..."
               />
               <p className="text-red-500">{fields.description.errors}</p>
@@ -99,7 +116,7 @@ export default function ProductCreateRoute() {
               <Input
                 key={fields.price.key}
                 name={fields.price.name}
-                defaultValue={fields.price.initialValue}
+                defaultValue={data.price}
                 type="number"
                 placeholder="$55"
               />
@@ -111,7 +128,7 @@ export default function ProductCreateRoute() {
               <Switch
                 key={fields.isFeatured.key}
                 name={fields.isFeatured.name}
-                defaultValue={fields.isFeatured.initialValue}
+                defaultChecked={data.isFeatured}
               />
               <p className="text-red-500">{fields.isFeatured.errors}</p>
             </div>
@@ -121,7 +138,7 @@ export default function ProductCreateRoute() {
               <Select
                 key={fields.status.key}
                 name={fields.status.name}
-                defaultValue={fields.status.initialValue}
+                defaultValue={data.status}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select Status" />
@@ -140,7 +157,7 @@ export default function ProductCreateRoute() {
               <Select
                 key={fields.category.key}
                 name={fields.category.name}
-                defaultValue={fields.category.initialValue}
+                defaultValue={data.category}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select Category" />
@@ -166,7 +183,7 @@ export default function ProductCreateRoute() {
               {images.length > 0 ? (
                 <div className="flex gap-5">
                   {images.map((image, index) => (
-                    <div key={image} className="relative h-[100px] w-[100px]">
+                    <div key={index} className="relative h-[100px] w-[100px]">
                       <Image
                         height={100}
                         width={100}
@@ -196,12 +213,13 @@ export default function ProductCreateRoute() {
                   }}
                 />
               )}
+
               <p className="text-red-500">{fields.images.errors}</p>
             </div>
           </div>
         </CardContent>
         <CardFooter>
-          <SubmitButton text="Create Product" />
+          <SubmitButton text="Edit Product" />
         </CardFooter>
       </Card>
     </form>
