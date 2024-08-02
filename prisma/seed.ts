@@ -1,13 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
-async function main() {
-  // await prisma.banner.create({
-  //   data: {
-  //     title: "Banner 1",
-  //     imageString: "https://via.placeholder.com/150",
-  //   },
-  // });
-}
+async function main() {}
 main()
   .then(async () => {
     await prisma.$disconnect();

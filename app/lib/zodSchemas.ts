@@ -20,6 +20,6 @@ export const productSchema = z.object({
 });
 
 export const bannerSchema = z.object({
-  title: z.string(),
+  title: z.string().min(3, "Title must be at least 3 characters long"),
   imageString: z.string(),
 });

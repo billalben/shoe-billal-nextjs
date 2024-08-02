@@ -14,7 +14,7 @@ export const ourFileRouter = {
       const user = await getUser();
 
       // If you throw, the user will not be able to upload
-      if (!user || user.email !== "billalben252@gmail.com") {
+      if (!user || user.email !== process.env.ADMIN_USER_DASHBOARD) {
         throw new UploadThingError("Unauthorized");
       }
 
@@ -38,7 +38,7 @@ export const ourFileRouter = {
       const user = await getUser();
 
       // If you throw, the user will not be able to upload
-      if (!user || user.email !== "billalben252@gmail.com") {
+      if (!user || user.email !== process.env.ADMIN_USER_DASHBOARD) {
         throw new UploadThingError("Unauthorized");
       }
 
