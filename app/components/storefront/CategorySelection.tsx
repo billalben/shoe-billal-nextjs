@@ -1,8 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import all from "@/public/all.jpeg";
-import men from "@/public/men.jpeg";
-import women from "@/public/women.jpeg";
 
 export function CategoriesSelection() {
   return (
@@ -23,9 +20,11 @@ export function CategoriesSelection() {
       <div className="mt-6 grid gap-6 md:max-h-[668px] md:grid-cols-2 md:grid-rows-2">
         <div className="relative overflow-hidden rounded-lg md:row-span-2">
           <Image
-            src={all}
-            alt="All Products Image"
+            src="/all.jpeg"
+            width={1728}
+            height={2160}
             className="h-full object-cover object-center"
+            alt="All Products Image"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-50" />
           <div className="absolute bottom-0 w-full p-6">
@@ -38,9 +37,11 @@ export function CategoriesSelection() {
 
         <div className="relative overflow-hidden rounded-lg">
           <Image
-            src={men}
-            alt="Products for men Image"
+            src="/men.jpeg"
+            width={1728}
+            height={2160}
             className="h-full object-cover object-top"
+            alt="Products for men Image"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-55" />
           <div className="absolute bottom-0 w-full p-6">
@@ -53,9 +54,11 @@ export function CategoriesSelection() {
 
         <div className="relative overflow-hidden rounded-lg">
           <Image
-            src={women}
-            alt="Women product image"
+            src="/women.jpeg"
+            width={1728}
+            height={2160}
             className="h-full object-cover object-top"
+            alt="Women product image"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-55" />
           <div className="absolute bottom-0 w-full p-6">
