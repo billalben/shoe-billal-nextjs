@@ -54,10 +54,14 @@ export default async function CategoriesPage({
   return (
     <section>
       <h1 className="my-5 text-3xl font-semibold">{title}</h1>
-      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-        {data.map((item) => (
-          <ProductCard item={item} key={item.id} />
-        ))}
+      <div className="relative grid min-h-[500px] gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {data.length > 0 ? (
+          data.map((item) => <ProductCard item={item} key={item.id} />)
+        ) : (
+          <p className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+            No products found
+          </p>
+        )}
       </div>
     </section>
   );

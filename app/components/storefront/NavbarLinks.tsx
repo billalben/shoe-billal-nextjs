@@ -43,9 +43,9 @@ export function NavbarLinks() {
           key={item.id}
           className={cn(
             location === item.href
-              ? "bg-muted"
-              : "hover:bg-muted hover:bg-opacity-75",
-            "group rounded-md p-2 font-medium",
+              ? "text-foreground"
+              : "text-muted-foreground hover:text-foreground",
+            "p-2 font-medium",
           )}
         >
           {item.name}
