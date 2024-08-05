@@ -5,6 +5,9 @@ import { redirect } from "next/navigation";
 import { parseWithZod } from "@conform-to/zod";
 import { bannerSchema, productSchema } from "./lib/zodSchemas";
 import prisma from "./lib/db";
+import { revalidatePath } from "next/cache";
+import { Cart } from "./lib/interfaces";
+import { redis } from "./lib/redis";
 
 export async function createProduct(prevState: unknown, formData: FormData) {
   const { getUser } = getKindeServerSession();
@@ -156,4 +159,82 @@ export async function deleteBanner(formData: FormData) {
     // console.error(error);
     redirect("/dashboard/banner");
   }
+}
+
+export async function addItem(productId: string) {
+  const { getUser } = getKindeServerSession();
+  const user = await getUser();
+
+  if (!user) return redirect("/");
+
+  let cart: Cart | null = await redis.get(`cart-${user.id}`);
+
+  const selectedProduct = await prisma.product.findUnique({
+    select: {
+      id: true,
+      name: true,
+      price: true,
+      images: true,
+    },
+    where: {
+      id: productId,
+    },
+  });
+
+  if (!selectedProduct) throw new Error("No product with this id");
+
+  if (!cart) {
+    cart = {
+      userId: user.id,
+      items: [
+        {
+          price: selectedProduct.price,
+          id: selectedProduct.id,
+          imageString: selectedProduct.images[0],
+          name: selectedProduct.name,
+          quantity: 1,
+        },
+      ],
+    };
+  } else {
+    const itemIndex = cart.items.findIndex((item) => item.id === productId);
+
+    if (itemIndex !== -1) {
+      cart.items[itemIndex].quantity += 1;
+    } else {
+      cart.items.push({
+        price: selectedProduct.price,
+        id: selectedProduct.id,
+        imageString: selectedProduct.images[0],
+        name: selectedProduct.name,
+        quantity: 1,
+      });
+    }
+  }
+
+  await redis.set(`cart-${user.id}`, cart);
+
+  revalidatePath("/", "layout");
+}
+
+export async function deleteItem(formData: FormData) {
+  const { getUser } = getKindeServerSession();
+  const user = await getUser();
+
+  if (!user) return redirect("/");
+
+  const productId = formData.get("productId");
+
+  let cart: Cart | null = await redis.get(`cart-${user.id}`);
+
+  if (cart && cart.items) {
+    const updateCart: Cart = {
+      userId: user.id,
+      items: cart.items.filter((item) => item.id !== productId),
+    };
+
+    await redis.set(`cart-${user.id}`, updateCart);
+  }
+
+  revalidatePath("/bag");
 }

@@ -6,6 +6,8 @@ import prisma from "@/app/lib/db";
 import { StarIcon } from "lucide-react";
 import { notFound } from "next/navigation";
 import { unstable_noStore as noStore } from "next/cache";
+import { addItem } from "@/app/actions";
+import { Skeleton } from "@/components/ui/skeleton";
 
 async function getData(productId: string) {
   const data = await prisma.product.findUnique({
@@ -33,10 +35,11 @@ export default async function ProductIdRoute({
 }) {
   noStore();
   const data = await getData(params.id);
+  const addProductToShoppingCart = addItem.bind(null, data.id);
 
   return (
     <>
-      <div className="grid grid-cols-1 items-start gap-6 py-6 md:grid-cols-2 lg:gap-x-24">
+      <div className="grid items-start gap-6 py-6 md:grid-cols-2 lg:gap-x-16">
         <ImageSlider images={data.images} />
 
         <div>
@@ -54,7 +57,9 @@ export default async function ProductIdRoute({
           </div>
           <p className="mt-6 text-base text-gray-700">{data.description}</p>
 
-          <ShoppingBagButton />
+          <form action={addProductToShoppingCart}>
+            <ShoppingBagButton />
+          </form>
         </div>
       </div>
 

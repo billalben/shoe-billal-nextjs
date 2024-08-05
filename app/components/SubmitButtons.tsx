@@ -57,13 +57,13 @@ export function DeleteItem() {
   return (
     <>
       {pending ? (
-        <button disabled className="text-end font-medium text-primary">
+        <Button type="submit" variant={"destructive"}>
           Removing...
-        </button>
+        </Button>
       ) : (
-        <button type="submit" className="text-end font-medium text-primary">
+        <Button type="submit" variant={"destructive"}>
           Delete
-        </button>
+        </Button>
       )}
     </>
   );
@@ -74,11 +74,11 @@ export function CheckoutButton() {
   return (
     <>
       {pending ? (
-        <Button disabled size="lg" className="mt-5 w-full">
+        <Button disabled size="lg" className="ml-auto mt-6 block">
           <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Please Wait
         </Button>
       ) : (
-        <Button type="submit" size="lg" className="mt-5 w-full">
+        <Button type="submit" size="lg" className="ml-auto mt-6 block">
           Checkout
         </Button>
       )}

@@ -66,13 +66,19 @@ export function ProductCard({ item }: iAppProps) {
 
 export function LoadingProductCard() {
   return (
-    <div className="flex flex-col">
-      <Skeleton className="h-[330px] w-full" />
-      <div className="mt-2 flex flex-col gap-y-2">
-        <Skeleton className="h-4 w-full" />
-        <Skeleton className="h-6 w-full" />
+    <div className="overflow-hidden rounded-lg border">
+      <Skeleton className="h-[320px] w-full rounded-none" />
+      <div className="border-t p-4">
+        <div className="flex justify-between">
+          <Skeleton className="h-5 w-24" />
+          <Skeleton className="h-5 w-10" />
+        </div>
+        <div className="my-5 space-y-1">
+          <Skeleton className="h-4 w-5/6" />
+          <Skeleton className="h-4 w-full" />
+        </div>
+        <Skeleton className="h-8 w-full" />
       </div>
-      <Skeleton className="mt-5 h-10 w-full" />
     </div>
   );
 }
