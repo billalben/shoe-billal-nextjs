@@ -1,27 +1,31 @@
+import prisma from "@/app/lib/db";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-export function RecentSales() {
-  const data = [
-    {
-      id: 1,
+async function getData() {
+  const data = await prisma.order.findMany({
+    select: {
+      amount: true,
+      id: true,
       User: {
-        firstName: "John Doe",
-        email: "john@gmail.com",
-        profileImage: "/all.jpeg",
+        select: {
+          firstName: true,
+          profileImage: true,
+          email: true,
+        },
       },
-      amount: 1000,
     },
-    {
-      id: 2,
-      User: {
-        firstName: "John Doe",
-        email: "john@gmail.com",
-        profileImage: "/all.jpeg",
-      },
-      amount: 1000,
+    orderBy: {
+      createdAt: "desc",
     },
-  ];
+    take: 7,
+  });
+
+  return data;
+}
+
+export async function RecentSales() {
+  const data = await getData();
 
   return (
     <Card>

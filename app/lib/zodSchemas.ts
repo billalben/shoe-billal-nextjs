@@ -7,8 +7,7 @@ export const productSchema = z.object({
     .max(30, "Name must be at most 30 characters long"),
   description: z
     .string()
-    .min(10, "Description must be at least 10 characters long")
-    .max(200, "Description must be at most 200 characters long"),
+    .min(10, "Description must be at least 10 characters long"),
   status: z.enum(["draft", "published", "archived"]),
   price: z
     .number()
